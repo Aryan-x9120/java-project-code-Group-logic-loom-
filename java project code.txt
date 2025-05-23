@@ -1,0 +1,135 @@
+import java.util.ArrayList;
+
+// Base Book class
+class Book {
+    protected String title;
+    protected String author;
+    protected String isbn;
+    protected boolean available;
+
+    public Book(String title, String author, String isbn) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.available = true;
+    }
+
+    public void borrow() {
+        if (available) {
+            available = false;
+            System.out.println("You have borrowed: " + title);
+        } else {
+            System.out.println(title + " is currently not available.");
+        }
+    }
+
+    public void returnBook() {
+        available = true;
+        System.out.println("You have returned: " + title);
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+public String toString() {
+        return title + " by " + author + " (ISBN: " + isbn + ") - " +
+               (available ? "Available" : "Borrowed");
+    }
+}
+
+// Subclass for Textbooks
+class Textbook extends Book {
+    private String subject;
+
+    public Textbook(String title, String author, String isbn, String subject) {
+        super(title, author, isbn);
+        this.subject = subject;
+    }
+
+    public String toString() {
+        return super.toString() + " [Textbook: " + subject + "]";
+    }
+}
+
+// Subclass for Novels
+class Novel extends Book {
+    private String genre;
+
+    public Novel(String title, String author, String isbn, String genre) {
+        super(title, author, isbn);
+        this.genre = genre;
+    }
+
+    public String toString() {
+        return super.toString() + " [Novel: " + genre + "]";
+    }
+}
+
+// Library class to manage the collection
+
+class Library {
+    private ArrayList<Book> books = new ArrayList<>();
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+public void search(String keyword) {
+        System.out.println("\nSearch Results:");
+        boolean found = false;
+        for (Book book : books) {
+            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase())) {
+                System.out.println(book);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No books found.");
+        }
+    }
+
+    public void borrowBook(String isbn) {
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                book.borrow();
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    public void returnBook(String isbn) {
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                book.returnBook();
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+}
+
+// Main class to test functionality
+public class LibraryApp {
+    public static void main(String[] args) {
+        Library library = new Library();
+
+ // Add books
+        library.addBook(new Textbook("Calculus", "James Stewart", "111111", "Math"));
+        library.addBook(new Novel("1984", "George Orwell", "222222", "Dystopian"));
+        library.addBook(new Novel("The Great Gatsby", "F. Scott Fitzgerald", "333333", "Classic"));
+
+        // Use features
+        library.search("1984");
+        library.borrowBook("222222");
+        library.search("1984");
+        library.returnBook("222222");
+    }
+}
